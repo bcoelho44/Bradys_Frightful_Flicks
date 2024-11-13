@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_13_180154) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_13_181531) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -25,6 +25,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_180154) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
   end
 
+  create_table "addresses", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "street"
+    t.string "city"
+    t.string "province"
+    t.string "postal_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_addresses_on_user_id"
+  end
+
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -35,6 +46,54 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_180154) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "genres", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "movie_genres", force: :cascade do |t|
+    t.integer "movie_id", null: false
+    t.integer "genre_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["genre_id"], name: "index_movie_genres_on_genre_id"
+    t.index ["movie_id"], name: "index_movie_genres_on_movie_id"
+  end
+
+  create_table "movies", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.decimal "price"
+    t.integer "stock_quantity"
+    t.integer "release_year"
+    t.string "director"
+    t.integer "runtime"
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.integer "movie_id", null: false
+    t.integer "quantity"
+    t.decimal "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movie_id"], name: "index_order_items_on_movie_id"
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.decimal "total_amount"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -49,4 +108,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_180154) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "addresses", "users"
+  add_foreign_key "movie_genres", "genres"
+  add_foreign_key "movie_genres", "movies"
+  add_foreign_key "order_items", "movies"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "orders", "users"
 end
