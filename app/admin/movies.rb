@@ -1,8 +1,37 @@
 ActiveAdmin.register Movie do
-  # Permitted parameters for strong parameters
   permit_params :title, :description, :price, :stock_quantity, :release_year, :director, :runtime, :image
 
-  # Form configuration for creating/editing a movie
+  # Customize filters
+  filter :title
+  filter :description
+  filter :price
+  filter :stock_quantity
+  filter :release_year
+  filter :director
+  filter :runtime
+
+  index do
+    selectable_column
+    column :title
+    column :description
+    column :price
+    column :stock_quantity
+    column :release_year
+    column :director
+    column :runtime
+    column 'Subgenres' do |movie|
+      movie.subgenres.map(&:name).join(', ')
+    end
+    column 'Image' do |movie|
+      if movie.image.attached?
+        image_tag url_for(movie.image), size: "50x50"
+      else
+        "No Image"
+      end
+    end
+    actions
+  end
+
   form do |f|
     f.inputs 'Movie Details' do
       f.input :title
@@ -12,8 +41,13 @@ ActiveAdmin.register Movie do
       f.input :release_year
       f.input :director
       f.input :runtime
-      f.input :image, as: :file # Allows uploading an image
+      f.input :image, as: :file
     end
+
+    f.inputs 'Subgenres' do
+      f.input :subgenres, as: :check_boxes, collection: Subgenre.all
+    end
+
     f.actions
   end
 end

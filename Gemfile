@@ -24,6 +24,7 @@ gem 'devise'
 gem 'activeadmin'
 gem 'kaminari'  # for pagination
 gem 'image_processing'  # for ActiveStorage
+gem 'sassc-rails'
 
 
 

@@ -6,4 +6,12 @@ class OrderItem < ApplicationRecord
   # Validations
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validates :price, numericality: { greater_than_or_equal_to: 0 }
+
+    # Define ransackable attributes for ActiveAdmin search
+    def self.ransackable_attributes(auth_object = nil)
+      [
+        "id", "movie_id", "order_id", "quantity",
+        "price", "created_at", "updated_at"
+      ]
+    end
 end

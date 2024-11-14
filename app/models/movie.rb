@@ -1,14 +1,23 @@
 class Movie < ApplicationRecord
+  # Active Storage attachment
+  has_one_attached :image
+
   # Relationships
-  has_and_belongs_to_many :genres, join_table: :movie_genres
+  has_and_belongs_to_many :subgenres, join_table: :movie_subgenres
   has_many :order_items
   has_many :orders, through: :order_items
 
   # Validations
   validates :title, presence: true, uniqueness: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :price, numericality: { greater_than_or_equal_to: 0 }, presence: true
   validates :stock_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :release_year, numericality: { only_integer: true }, allow_nil: true
-  validates :director, presence: true
-  validates :runtime, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+
+  # Ransack customization
+  def self.ransackable_attributes(auth_object = nil)
+    %w[title description price stock_quantity release_year director runtime created_at updated_at]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[subgenres order_items orders]
+  end
 end
