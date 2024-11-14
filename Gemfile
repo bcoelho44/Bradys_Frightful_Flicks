@@ -25,7 +25,7 @@ gem 'activeadmin'
 gem 'kaminari'  # for pagination
 gem 'image_processing'  # for ActiveStorage
 gem 'sassc-rails'
-
+gem 'mini_magick'
 
 
 

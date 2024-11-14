@@ -6,13 +6,15 @@
       <% @movies.each do |movie| %>
         <div class="column is-one-third">
           <div class="card">
-            <% if movie.image.attached? %>
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <%= image_tag url_for(movie.image) %>
-                </figure>
-              </div>
-            <% end %>
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <% if movie.image.attached? %>
+                  <%= image_tag movie.image.variant(resize_to_fill: [300, 500]).processed, class: "is-fullwidth" %>
+                <% else %>
+                  <%= image_tag "placeholder.png", size: "100x300", class: "is-fullwidth" %>
+                <% end %>
+              </figure>
+            </div>
 
             <div class="card-content">
               <p class="title is-4"><%= link_to movie.title, movie_path(movie) %></p>

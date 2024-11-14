@@ -1,0 +1,5 @@
+.card-image img {
+  object-fit: cover; /* Ensures the image fits without stretching */
+  width: 100%;       /* Full width */
+  height: 200px;     /* Fixed height for uniformity */
+}

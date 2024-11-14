@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "home/index"
   # Devise routes for ActiveAdmin users
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
@@ -16,9 +17,8 @@ Rails.application.routes.draw do
   # Root path route
   root to: "home#index" # Update this to the controller and action for your app's homepage
 
-  Rails.application.routes.draw do
-    # Other routes
-    resources :movies, only: [:index, :show]
-  end
+  # Movie resources
+  resources :movies, only: [:index, :show]
 
+  # Add any additional routes below this line
 end
