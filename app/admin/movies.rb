@@ -1,5 +1,5 @@
 ActiveAdmin.register Movie do
-  permit_params :title, :description, :price, :stock_quantity, :release_year, :director, :runtime, :image
+  permit_params :title, :description, :price, :stock_quantity, :release_year, :director, :runtime, :image, subgenre_ids: []
 
   # Customize filters
   filter :title
@@ -9,6 +9,8 @@ ActiveAdmin.register Movie do
   filter :release_year
   filter :director
   filter :runtime
+  filter :subgenres, as: :select, collection: Subgenre.all.map(&:name)
+
 
   index do
     selectable_column
