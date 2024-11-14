@@ -20,4 +20,15 @@ class Movie < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     %w[subgenres order_items orders]
   end
-end
+
+
+    # Custom Ransack Scope
+    def self.ransackable_scopes(auth_object = nil)
+      %i[subgenre_id_eq]
+    end
+
+    # Scope to filter by subgenre ID
+    scope :subgenre_id_eq, ->(subgenre_id) {
+      joins(:subgenres).where(subgenres: { id: subgenre_id }).distinct
+    }
+  end

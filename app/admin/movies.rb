@@ -9,7 +9,7 @@ ActiveAdmin.register Movie do
   filter :release_year
   filter :director
   filter :runtime
-  filter :subgenres, as: :select, collection: Subgenre.all.map(&:name)
+  filter :subgenre_id_eq, as: :select, label: 'Subgenre', collection: -> { Subgenre.pluck(:name, :id) }
 
 
   index do
