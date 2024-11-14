@@ -27,6 +27,7 @@ class Movie < ApplicationRecord
       %i[subgenre_id_eq]
     end
 
+
     # Scope to filter by subgenre ID
     scope :subgenre_id_eq, ->(subgenre_id) {
       joins(:subgenres).where(subgenres: { id: subgenre_id }).distinct

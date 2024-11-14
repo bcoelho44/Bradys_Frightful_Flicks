@@ -11,7 +11,6 @@ ActiveAdmin.register Movie do
   filter :runtime
   filter :subgenre_id_eq, as: :select, label: 'Subgenre', collection: -> { Subgenre.pluck(:name, :id) }
 
-
   index do
     selectable_column
     column :title

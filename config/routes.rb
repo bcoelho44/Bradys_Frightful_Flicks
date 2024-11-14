@@ -15,4 +15,10 @@ Rails.application.routes.draw do
 
   # Root path route
   root to: "home#index" # Update this to the controller and action for your app's homepage
+
+  Rails.application.routes.draw do
+    # Other routes
+    resources :movies, only: [:index, :show]
+  end
+
 end
