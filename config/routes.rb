@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "pages/about"
   # Home page
   root to: 'home#index'
 
@@ -18,6 +19,11 @@ Rails.application.routes.draw do
 
   # User authentication routes
   devise_for :users
+
+  get "/about", to: "pages#about", as: :about
+  get "/contact", to: "pages#contact", as: :contact
+
+
 
   # Health check endpoint
   get 'up', to: 'rails/health#show', as: :rails_health_check

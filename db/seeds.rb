@@ -7,4 +7,19 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
+# Admin User
+AdminUser.find_or_create_by(email: 'admin@example.com') do |admin|
+  admin.password = 'password'
+  admin.password_confirmation = 'password'
+end
+
+# Static Page for About
+StaticPage.find_or_create_by(slug: "about") do |page|
+  page.title = "About Us"
+  page.content = "Welcome to Brady's Frightful Flicks! This is the About page."
+end
+
+StaticPage.find_or_create_by(slug: "contact") do |page|
+  page.title = "Contact Us"
+  page.content = "This is the contact page content. Add your contact details here."
+end

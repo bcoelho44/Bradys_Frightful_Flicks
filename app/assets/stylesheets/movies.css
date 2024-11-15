@@ -1,5 +1,13 @@
-.card-image img {
-  object-fit: cover; /* Ensures the image fits without stretching */
-  width: 100%;       /* Full width */
-  height: 200px;     /* Fixed height for uniformity */
+
+
+.columns {
+  margin-bottom: 1.5rem; /* Add spacing between rows */
+}
+
+.card {
+  height: 100%; /* Ensures cards take full height for alignment */
+}
+
+.box {
+  height: 100%; /* Ensures uniform height for categories */
 }
