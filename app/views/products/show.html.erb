@@ -1,0 +1,22 @@
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-half">
+        <% if @product.image.attached? %>
+          <figure class="image is-4by3">
+            <%= image_tag @product.image.variant(resize_to_limit: [600, 400]).processed %>
+          </figure>
+        <% end %>
+      </div>
+      <div class="column is-half">
+        <h1 class="title"><%= @product.title %></h1>
+        <p><strong>Price:</strong> $<%= number_to_currency(@product.price) %></p>
+        <p><strong>Director:</strong> <%= @product.director %></p>
+        <p><strong>Runtime:</strong> <%= @product.runtime %> minutes</p>
+        <p><strong>Category:</strong> <%= @product.subgenres.map(&:name).join(', ') %></p>
+        <p><strong>Description:</strong></p>
+        <p><%= @product.description %></p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,2 +1,47 @@
-<h1>Welcome to Brady's Frightful Flicks</h1>
-<p>This is the homepage.</p>
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">Welcome to Brady's Frightful Flicks!</h1>
+      <p class="subtitle">Explore our collection of classic horror movies.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="title">Featured Movies</h2>
+    <div class="columns is-multiline">
+      <% @featured_products.each do |movie| %>
+        <div class="column is-one-third">
+          <div class="card">
+            <% if movie.image.attached? %>
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <%= image_tag movie.image.variant(resize_to_fill: [300, 200]).processed %>
+                </figure>
+              </div>
+            <% end %>
+            <div class="card-content">
+              <p class="title is-4"><%= link_to movie.title, product_path(movie) %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="title">Browse by Category</h2>
+    <div class="columns is-multiline">
+      <% @categories.each do |category| %>
+        <div class="column is-one-quarter">
+          <div class="box has-text-centered">
+            <h3 class="title is-5"><%= link_to category.name, category_products_path(category.id) %></h3>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

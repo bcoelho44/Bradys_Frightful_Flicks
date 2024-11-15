@@ -1,0 +1,24 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">All Movies</h1>
+    <div class="columns is-multiline">
+      <% @products.each do |movie| %>
+        <div class="column is-one-third">
+          <div class="card">
+            <% if movie.image.attached? %>
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <%= image_tag movie.image.variant(resize_to_fill: [300, 200]).processed %>
+                </figure>
+              </div>
+            <% end %>
+            <div class="card-content">
+              <p class="title is-4"><%= link_to movie.title, product_path(movie) %></p>
+              <p><strong>Category:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
