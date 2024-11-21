@@ -1,22 +1,27 @@
 <section class="section">
   <div class="container">
-    <h1 class="title">Search Movies</h1>
+    <h1 class="title">All Movies</h1>
 
-    <%= search_form_for @q, url: products_path, method: :get do |f| %>
+    <!-- Recently Added Link -->
+    <div class="buttons">
+      <%= link_to "Recently Added", products_path(recently_added: true), class: "button is-info" %>
+      <%= link_to "All Movies", products_path, class: "button is-light" if params[:recently_added] %>
+    </div>
+
+    <!-- Search and Filter Form -->
+    <%= search_form_for @q, url: products_path, method: :get, html: { class: "form" } do |f| %>
       <div class="field">
         <label class="label">Keyword</label>
         <div class="control">
           <%= f.search_field :title_or_description_cont, class: "input", placeholder: "Search by keyword" %>
         </div>
       </div>
-
       <div class="field">
         <label class="label">Category</label>
         <div class="control">
-          <%= f.collection_select :subgenres_id_eq, @categories, :id, :name, { include_blank: "All Categories" }, { class: "select" } %>
+          <%= f.collection_select :subgenre_id_eq, @categories, :id, :name, { include_blank: "All Categories" }, { class: "select" } %>
         </div>
       </div>
-
       <div class="field">
         <div class="control">
           <%= f.submit "Search", class: "button is-primary" %>
@@ -24,6 +29,7 @@
       </div>
     <% end %>
 
+    <!-- Display Products -->
     <div class="columns is-multiline">
       <% @products.each do |movie| %>
         <div class="column is-one-third">

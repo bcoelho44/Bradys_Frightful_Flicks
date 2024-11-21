@@ -1,23 +1,28 @@
 class ProductsController < ApplicationController
   def index
-    @q = Movie.includes(:subgenres).ransack(params[:q]) # Initialize Ransack for search and filtering
-    @products = @q.result(distinct: true).order(created_at: :desc) # Get filtered results
+    # Initialize Ransack for keyword search and filtering
+    @q = Movie.ransack(params[:q])
+    # Get filtered results and order them by creation date
+    @products = @q.result(distinct: true).order(created_at: :desc)
 
-    if params[:recently_added].present?
-      @products = @products.recently_added # Apply the "recently added" filter
-    end
+    # Apply the "recently added" filter if specified
+    @products = @products.recently_added if params[:recently_added].present?
 
-    @categories = Subgenre.all # Fetch all categories for the dropdown
+    # Fetch all categories (subgenres) for the dropdown menu
+    @categories = Subgenre.all
   end
 
   def category
     Rails.logger.debug("Category ID: #{params[:id]}") # Debug log
-    @category = Subgenre.find(params[:id]) # Find the subgenre
-    @products = @category.movies.order(created_at: :desc) # Fetch movies in that subgenre
+    # Find the subgenre by ID
+    @category = Subgenre.find(params[:id])
+    # Fetch movies associated with the selected subgenre, ordered by creation date
+    @products = @category.movies.order(created_at: :desc)
     Rails.logger.debug("Movies Count: #{@products.count}") # Debug log
   end
 
   def show
-    @product = Movie.find(params[:id]) # Find a specific movie
+    # Find a specific movie by its ID
+    @product = Movie.find(params[:id])
   end
 end
