@@ -1,6 +1,10 @@
 class MoviesController < ApplicationController
   def index
-    @movies = Movie.includes(:subgenres).order(created_at: :desc) # Fetch all movies with subgenres
+    if params[:filter] == "recently_added"
+      @movies = Movie.recently_added.includes(:subgenres).order(created_at: :desc)
+    else
+      @movies = Movie.includes(:subgenres).order(created_at: :desc)
+    end
   end
 
   def show

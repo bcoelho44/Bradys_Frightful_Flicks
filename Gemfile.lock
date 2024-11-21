@@ -367,6 +367,7 @@ DEPENDENCIES
   mini_magick
   puma (>= 5.0)
   rails (~> 7.2.1)
+  ransack
   rubocop-rails-omakase
   sassc-rails
   selenium-webdriver

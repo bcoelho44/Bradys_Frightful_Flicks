@@ -2,25 +2,43 @@
   <div class="container">
     <h1 class="title">All Movies</h1>
 
+    <!-- Filter Buttons -->
+    <div class="buttons mb-4">
+      <%= link_to "All Movies", movies_path, class: "button is-light" %>
+      <%= link_to "Recently Added", movies_path(filter: "recently_added"), class: "button is-primary" %>
+    </div>
+
+    <!-- Movie Cards -->
     <div class="columns is-multiline">
       <% @movies.each do |movie| %>
         <div class="column is-one-third">
           <div class="card">
+            <!-- Movie Image -->
             <div class="card-image">
               <figure class="image is-4by3">
                 <% if movie.image.attached? %>
-                  <%= image_tag movie.image.variant(resize_to_fill: [300, 500]).processed, class: "is-fullwidth" %>
+                  <%= image_tag movie.image.variant(resize_to_fill: [300, 400]).processed, class: "is-fullwidth" %>
                 <% else %>
-                  <%= image_tag "placeholder.png", size: "100x300", class: "is-fullwidth" %>
+                  <%= image_tag "placeholder.png", size: "300x400", class: "is-fullwidth" %>
                 <% end %>
               </figure>
             </div>
 
+            <!-- Movie Content -->
             <div class="card-content">
-              <p class="title is-4"><%= link_to movie.title, movie_path(movie) %></p>
-              <p class="subtitle is-6">Directed by <%= movie.director %></p>
-              <p><strong>Price:</strong> $<%= number_to_currency(movie.price) %></p>
-              <p><strong>Subgenres:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
+              <p class="title is-4">
+                <%= link_to movie.title, movie_path(movie) %>
+                <% if movie.created_at >= 3.days.ago %>
+                  <span class="tag is-success">New</span>
+                <% end %>
+              </p>
+              <p class="subtitle is-6">Directed by <%= movie.director.presence || "Unknown" %></p>
+              <p><strong>Price:</strong> <%= number_to_currency(movie.price) %></p>
+              <% if movie.subgenres.any? %>
+                <p><strong>Subgenres:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
+              <% else %>
+                <p><strong>Subgenres:</strong> None listed</p>
+              <% end %>
             </div>
           </div>
         </div>
