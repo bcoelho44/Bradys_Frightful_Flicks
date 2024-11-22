@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
+  # Pages routes
   get "pages/about"
+  get "/about", to: "pages#about", as: :about
+  get "/contact", to: "pages#contact", as: :contact
+
   # Home page
   root to: 'home#index'
 
@@ -13,17 +17,21 @@ Rails.application.routes.draw do
   # Movies routes (if needed separately from products)
   resources :movies, only: [:index, :show]
 
+  # Cart routes
+  resources :cart, only: [:index] do
+    collection do
+      patch 'update', to: 'cart#update', as: :update
+      delete 'remove', to: 'cart#remove', as: :remove
+    end
+  end
+  post 'cart/add', to: 'products#add_to_cart', as: :add_to_cart
+
   # ActiveAdmin routes
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
   # User authentication routes
   devise_for :users
-
-  get "/about", to: "pages#about", as: :about
-  get "/contact", to: "pages#contact", as: :contact
-
-
 
   # Health check endpoint
   get 'up', to: 'rails/health#show', as: :rails_health_check
