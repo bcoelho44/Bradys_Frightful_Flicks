@@ -2,24 +2,32 @@
   <div class="container">
     <h1 class="title">All Movies</h1>
 
-    <!-- Recently Added Link -->
+    <!-- Filter Buttons -->
     <div class="buttons">
       <%= link_to "Recently Added", products_path(recently_added: true), class: "button is-info" %>
-      <%= link_to "All Movies", products_path, class: "button is-light" if params[:recently_added] %>
+      <% if params[:recently_added] %>
+        <%= link_to "All Movies", products_path, class: "button is-light" %>
+      <% end %>
     </div>
 
     <!-- Search and Filter Form -->
     <%= search_form_for @q, url: products_path, method: :get, html: { class: "form" } do |f| %>
-      <div class="field">
-        <label class="label">Keyword</label>
-        <div class="control">
-          <%= f.search_field :title_or_description_cont, class: "input", placeholder: "Search by keyword" %>
+      <div class="columns">
+        <div class="column is-half">
+          <div class="field">
+            <label class="label">Keyword</label>
+            <div class="control">
+              <%= f.search_field :title_or_description_cont, class: "input", placeholder: "Search by keyword" %>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <label class="label">Category</label>
-        <div class="control">
-          <%= f.collection_select :subgenre_id_eq, @categories, :id, :name, { include_blank: "All Categories" }, { class: "select" } %>
+        <div class="column is-half">
+          <div class="field">
+            <label class="label">Category</label>
+            <div class="control">
+              <%= f.collection_select :subgenre_id_eq, @categories, :id, :name, { include_blank: "All Categories" }, { class: "select" } %>
+            </div>
+          </div>
         </div>
       </div>
       <div class="field">
@@ -31,21 +39,38 @@
 
     <!-- Display Products -->
     <div class="columns is-multiline">
-      <% @products.each do |movie| %>
-        <div class="column is-one-third">
-          <div class="card">
-            <% if movie.image.attached? %>
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <%= image_tag movie.image.variant(resize_to_fill: [300, 200]).processed %>
-                </figure>
+      <% if @products.any? %>
+        <% @products.each do |movie| %>
+          <div class="column is-one-third">
+            <div class="card">
+              <% if movie.image.attached? %>
+                <div class="card-image">
+                  <figure class="image is-4by3">
+                    <%= image_tag movie.image.variant(resize_to_fill: [300, 200]).processed %>
+                  </figure>
+                </div>
+              <% end %>
+              <div class="card-content">
+                <p class="title is-4"><%= link_to movie.title, product_path(movie) %></p>
+                <p><strong>Category:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
+                <!-- Add to Cart Form -->
+                <%= form_with url: add_to_cart_product_path(movie), method: :post do |f| %>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <%= number_field_tag :quantity, 1, min: 1, class: "input is-small" %>
+                    </div>
+                    <div class="control">
+                      <%= f.submit "Add to Cart", class: "button is-primary is-small" %>
+                    </div>
+                  </div>
+                <% end %>
               </div>
-            <% end %>
-            <div class="card-content">
-              <p class="title is-4"><%= link_to movie.title, product_path(movie) %></p>
-              <p><strong>Category:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
             </div>
           </div>
+        <% end %>
+      <% else %>
+        <div class="notification is-warning">
+          No movies found. Try adjusting your search or filter criteria.
         </div>
       <% end %>
     </div>

@@ -1,21 +1,41 @@
 <section class="section">
   <div class="container">
     <div class="columns">
+      <!-- Left Column: Movie Image -->
       <div class="column is-half">
         <% if @product.image.attached? %>
           <figure class="image is-4by3">
-            <%= image_tag @product.image.variant(resize_to_limit: [600, 400]).processed %>
+            <%= image_tag @product.image.variant(resize_to_limit: [600, 400]).processed, class: "is-rounded" %>
+          </figure>
+        <% else %>
+          <figure class="image is-4by3">
+            <%= image_tag "placeholder.png", class: "is-rounded" %>
           </figure>
         <% end %>
       </div>
+
+      <!-- Right Column: Movie Details -->
       <div class="column is-half">
         <h1 class="title"><%= @product.title %></h1>
-        <p><strong>Price:</strong> $<%= number_to_currency(@product.price) %></p>
+        <p><strong>Price:</strong> <%= number_to_currency(@product.price) %></p>
         <p><strong>Director:</strong> <%= @product.director %></p>
         <p><strong>Runtime:</strong> <%= @product.runtime %> minutes</p>
         <p><strong>Category:</strong> <%= @product.subgenres.map(&:name).join(', ') %></p>
         <p><strong>Description:</strong></p>
         <p><%= @product.description %></p>
+        <hr>
+
+        <!-- Add to Cart Form -->
+        <%= form_with url: add_to_cart_product_path(@product), method: :post do |f| %>
+          <div class="field is-grouped">
+            <div class="control">
+              <%= number_field_tag :quantity, 1, min: 1, class: "input is-small" %>
+            </div>
+            <div class="control">
+              <%= f.submit "Add to Cart", class: "button is-primary" %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

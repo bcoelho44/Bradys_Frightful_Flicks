@@ -25,4 +25,26 @@ class ProductsController < ApplicationController
     # Find a specific movie by its ID
     @product = Movie.find(params[:id])
   end
+
+  def add_to_cart
+    # Add a product to the cart
+    movie_id = params[:id]
+    quantity = params[:quantity].to_i
+
+    # Initialize cart if not already done
+    session[:cart] ||= {}
+    cart = session[:cart]
+
+    if cart[movie_id]
+      # If the product already exists in the cart, update the quantity
+      cart[movie_id] += quantity
+    else
+      # Otherwise, add the product to the cart
+      cart[movie_id] = quantity
+    end
+
+    session[:cart] = cart
+    flash[:notice] = "Product added to cart!"
+    redirect_to cart_index_path
+  end
 end

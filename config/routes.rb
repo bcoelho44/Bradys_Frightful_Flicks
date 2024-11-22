@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  # Pages routes
-  get "pages/about"
+  # Static pages routes
   get "/about", to: "pages#about", as: :about
   get "/contact", to: "pages#contact", as: :contact
 
@@ -12,9 +11,13 @@ Rails.application.routes.draw do
     collection do
       get 'category/:id', to: 'products#category', as: :category
     end
+
+    member do
+      post 'add_to_cart', to: 'products#add_to_cart'
+    end
   end
 
-  # Movies routes (if needed separately from products)
+  # Movies routes (optional, if separate from products)
   resources :movies, only: [:index, :show]
 
   # Cart routes
@@ -24,7 +27,6 @@ Rails.application.routes.draw do
       delete 'remove', to: 'cart#remove', as: :remove
     end
   end
-  post 'cart/add', to: 'products#add_to_cart', as: :add_to_cart
 
   # ActiveAdmin routes
   devise_for :admin_users, ActiveAdmin::Devise.config
