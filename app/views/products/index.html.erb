@@ -1,9 +1,9 @@
 <section class="section">
   <div class="container">
-    <h1 class="title">All Movies</h1>
+    <h1 class="title has-text-centered">All Movies</h1>
 
     <!-- Filter Buttons -->
-    <div class="buttons">
+    <div class="buttons has-addons is-centered">
       <%= link_to "Recently Added", products_path(recently_added: true), class: "button is-info" %>
       <% if params[:recently_added] %>
         <%= link_to "All Movies", products_path, class: "button is-light" %>
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <div class="field">
+      <div class="field has-text-centered">
         <div class="control">
           <%= f.submit "Search", class: "button is-primary" %>
         </div>
@@ -38,24 +38,24 @@
     <% end %>
 
     <!-- Display Products -->
-    <div class="columns is-multiline">
+    <div class="columns is-multiline is-variable is-8">
       <% if @products.any? %>
         <% @products.each do |movie| %>
-          <div class="column is-one-third">
+          <div class="column is-one-quarter">
             <div class="card">
               <% if movie.image.attached? %>
                 <div class="card-image">
-                  <figure class="image is-4by3">
-                    <%= image_tag movie.image.variant(resize_to_fill: [300, 200]).processed %>
+                  <figure class="image">
+                    <%= image_tag movie.image.variant(resize_to_fill: [300, 200]).processed, class: "is-rounded" %>
                   </figure>
                 </div>
               <% end %>
               <div class="card-content">
-                <p class="title is-4"><%= link_to movie.title, product_path(movie) %></p>
-                <p><strong>Category:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
+                <p class="title is-5 has-text-centered"><%= link_to movie.title, product_path(movie) %></p>
+                <p class="has-text-centered"><strong>Category:</strong> <%= movie.subgenres.map(&:name).join(', ') %></p>
                 <!-- Add to Cart Form -->
                 <%= form_with url: add_to_cart_product_path(movie), method: :post do |f| %>
-                  <div class="field is-grouped">
+                  <div class="field is-grouped is-grouped-centered">
                     <div class="control">
                       <%= number_field_tag :quantity, 1, min: 1, class: "input is-small" %>
                     </div>
@@ -69,10 +69,15 @@
           </div>
         <% end %>
       <% else %>
-        <div class="notification is-warning">
+        <div class="notification is-warning has-text-centered">
           No movies found. Try adjusting your search or filter criteria.
         </div>
       <% end %>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination is-centered">
+      <%= paginate @products %>
     </div>
   </div>
 </section>

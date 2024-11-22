@@ -2,11 +2,11 @@ class ProductsController < ApplicationController
   def index
     # Initialize Ransack for keyword search and filtering
     @q = Movie.ransack(params[:q])
-    # Get filtered results and order them by creation date
-    @products = @q.result(distinct: true).order(created_at: :desc)
+    # Get filtered results, order them by creation date, and apply pagination
+    @products = @q.result(distinct: true).order(created_at: :desc).page(params[:page]).per(9)
 
     # Apply the "recently added" filter if specified
-    @products = @products.recently_added if params[:recently_added].present?
+    @products = @products.recently_added.page(params[:page]).per(9) if params[:recently_added].present?
 
     # Fetch all categories (subgenres) for the dropdown menu
     @categories = Subgenre.all
@@ -16,8 +16,8 @@ class ProductsController < ApplicationController
     Rails.logger.debug("Category ID: #{params[:id]}") # Debug log
     # Find the subgenre by ID
     @category = Subgenre.find(params[:id])
-    # Fetch movies associated with the selected subgenre, ordered by creation date
-    @products = @category.movies.order(created_at: :desc)
+    # Fetch movies associated with the selected subgenre, ordered by creation date, and apply pagination
+    @products = @category.movies.order(created_at: :desc).page(params[:page]).per(9)
     Rails.logger.debug("Movies Count: #{@products.count}") # Debug log
   end
 
