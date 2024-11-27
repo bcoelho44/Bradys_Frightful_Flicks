@@ -12,6 +12,9 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }
   validates :role, presence: true, inclusion: { in: %w[admin customer], message: "%{value} is not a valid role" }
 
+  # Enum for roles
+  enum role: { admin: 'admin', customer: 'customer' }
+
   # Scopes
   scope :admins, -> { where(role: 'admin') }
   scope :customers, -> { where(role: 'customer') }
