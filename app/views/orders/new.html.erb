@@ -1,0 +1,31 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">Checkout</h1>
+
+    <%= form_with model: @order, url: orders_path, method: :post do |f| %>
+      <h2 class="subtitle">Billing Information</h2>
+      <div class="field">
+        <%= f.label :user_email, "Email" %>
+        <%= current_user.email %>
+      </div>
+      <h2 class="subtitle">Cart Summary</h2>
+      <% @cart_items.each do |movie_id, quantity| %>
+        <% movie = Movie.find(movie_id) %>
+        <div class="box">
+          <p><strong>Title:</strong> <%= movie.title %></p>
+          <p><strong>Quantity:</strong> <%= quantity %></p>
+          <p><strong>Price:</strong> <%= number_to_currency(movie.price) %></p>
+          <p><strong>Subtotal:</strong> <%= number_to_currency(movie.price * quantity) %></p>
+        </div>
+      <% end %>
+      <h2 class="subtitle">Order Total</h2>
+      <p>
+        <strong>Total:</strong>
+        <%= number_to_currency(@cart_items.sum { |movie_id, qty| Movie.find(movie_id).price * qty }) %>
+      </p>
+      <div class="field">
+        <%= f.submit "Place Order", class: "button is-primary" %>
+      </div>
+    <% end %>
+  </div>
+</section>

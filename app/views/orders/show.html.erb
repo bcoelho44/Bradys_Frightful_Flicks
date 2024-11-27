@@ -1,0 +1,18 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">Order Confirmation</h1>
+    <p><strong>Order ID:</strong> <%= @order.id %></p>
+    <p><strong>Status:</strong> <%= @order.status.capitalize %></p>
+    <p><strong>Order Total:</strong> <%= number_to_currency(@order.total_amount) %></p>
+
+    <h2 class="subtitle">Order Items</h2>
+    <% @order.order_items.each do |item| %>
+      <div class="box">
+        <p><strong>Movie:</strong> <%= item.movie.title %></p>
+        <p><strong>Quantity:</strong> <%= item.quantity %></p>
+        <p><strong>Price:</strong> <%= number_to_currency(item.price) %></p>
+        <p><strong>Subtotal:</strong> <%= number_to_currency(item.quantity * item.price) %></p>
+      </div>
+    <% end %>
+  </div>
+</section>

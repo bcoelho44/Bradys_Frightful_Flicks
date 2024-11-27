@@ -17,4 +17,23 @@ class Order < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     ["user", "order_items", "movies"]
   end
+
+  # Tax Calculation Logic
+  def calculate_taxes
+    province = user.address.province
+    subtotal = order_items.sum { |item| item.price * item.quantity }
+
+    gst = (province.gst / 100) * subtotal
+    pst = (province.pst / 100) * subtotal
+    hst = (province.hst / 100) * subtotal
+
+    gst + pst + hst
+  end
+
+  # Total Amount Calculation
+  def calculate_total
+    subtotal = order_items.sum { |item| item.price * item.quantity }
+    taxes = calculate_taxes
+    self.total_amount = subtotal + taxes
+  end
 end
