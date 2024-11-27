@@ -10,23 +10,15 @@ class User < ApplicationRecord
   # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }
-  validates :role, presence: true, inclusion: { in: %w[admin customer], message: "%{value} is not a valid role" }
+  validates :role, inclusion: { in: ['customer'], message: "Only 'customer' role is allowed" }
 
-  # Enum for roles
-  enum role: { admin: 'admin', customer: 'customer' }
-
-  # Scopes
-  scope :admins, -> { where(role: 'admin') }
-  scope :customers, -> { where(role: 'customer') }
-
-  # Callbacks
+  # Default role
   after_initialize :set_default_role, if: :new_record?
 
-  # Methods
-  def admin?
-    role == 'admin'
-  end
+  # Scopes
+  scope :customers, -> { where(role: 'customer') }
 
+  # Methods
   def customer?
     role == 'customer'
   end
