@@ -1,12 +1,15 @@
 class Order < ApplicationRecord
   # Relationships
   belongs_to :user
-  has_many :order_items
+  has_many :order_items, dependent: :destroy
   has_many :movies, through: :order_items
 
   # Validations
   validates :total_amount, numericality: { greater_than_or_equal_to: 0 }
   validates :status, presence: true, inclusion: { in: %w[pending paid shipped], message: "%{value} is not a valid status" }
+
+  # Hooks
+  before_save :update_total_amount
 
   # Define ransackable attributes for ActiveAdmin search
   def self.ransackable_attributes(auth_object = nil)
@@ -20,8 +23,10 @@ class Order < ApplicationRecord
 
   # Tax Calculation Logic
   def calculate_taxes
-    province = user.address.province
-    subtotal = order_items.sum { |item| item.price * item.quantity }
+    province = user.province # Ensure province is directly accessible via user
+    raise "Province not found for user!" unless province
+
+    subtotal = calculate_subtotal
 
     gst = (province.gst / 100) * subtotal
     pst = (province.pst / 100) * subtotal
@@ -30,9 +35,14 @@ class Order < ApplicationRecord
     gst + pst + hst
   end
 
-  # Total Amount Calculation
-  def calculate_total
-    subtotal = order_items.sum { |item| item.price * item.quantity }
+  # Subtotal Calculation Logic
+  def calculate_subtotal
+    order_items.sum { |item| item.price * item.quantity }
+  end
+
+  # Total Amount Calculation Logic
+  def update_total_amount
+    subtotal = calculate_subtotal
     taxes = calculate_taxes
     self.total_amount = subtotal + taxes
   end

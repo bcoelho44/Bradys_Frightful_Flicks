@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get "orders/new"
-  get "orders/create"
-  get "orders/show"
   # Static pages routes
   get "/about", to: "pages#about", as: :about
   get "/contact", to: "pages#contact", as: :contact
@@ -39,7 +36,9 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   # User authentication routes
-  devise_for :users
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
 
   # Health check endpoint
   get 'up', to: 'rails/health#show', as: :rails_health_check

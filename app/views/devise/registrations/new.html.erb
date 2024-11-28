@@ -24,10 +24,10 @@
     <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input" %>
   </div>
 
-  <!-- Role Field -->
+  <!-- Province Selection -->
   <div class="field">
-    <%= f.label :role, "Sign up as:" %><br />
-    <%= f.select :role, User.roles.keys.map { |r| [r.humanize.capitalize, r] }, { include_blank: "Select Role" }, class: "select" %>
+    <%= f.label :province_id, "Province" %><br />
+    <%= f.collection_select :province_id, Province.all, :id, :name, { include_blank: "Select Province" }, class: "select" %>
   </div>
 
   <!-- Submit Button -->

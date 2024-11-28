@@ -35,6 +35,24 @@
           <% end %>
         </tbody>
       </table>
+
+      <!-- Summary Section -->
+      <div class="box">
+        <% subtotal = @cart_items.sum { |item| item[:movie].price * item[:quantity] } %>
+        <% province = current_user.province %>
+        <% gst = (province.gst * subtotal / 100).round(2) %>
+        <% pst = (province.pst * subtotal / 100).round(2) %>
+        <% hst = (province.hst * subtotal / 100).round(2) %>
+        <% total_tax = gst + pst + hst %>
+        <% grand_total = subtotal + total_tax %>
+
+        <p><strong>Subtotal:</strong> <%= number_to_currency(subtotal) %></p>
+        <p><strong>GST:</strong> <%= number_to_currency(gst) %></p>
+        <p><strong>PST:</strong> <%= number_to_currency(pst) %></p>
+        <p><strong>HST:</strong> <%= number_to_currency(hst) %></p>
+        <p><strong>Total Tax:</strong> <%= number_to_currency(total_tax) %></p>
+        <p><strong>Grand Total:</strong> <%= number_to_currency(grand_total) %></p>
+      </div>
     <% else %>
       <p>Your cart is empty!</p>
     <% end %>
@@ -42,4 +60,3 @@
 </section>
 
 <%= link_to "Checkout", new_order_path, class: "button is-primary" %>
-

@@ -8,6 +8,7 @@
         <%= f.label :user_email, "Email" %>
         <%= current_user.email %>
       </div>
+
       <h2 class="subtitle">Cart Summary</h2>
       <% @cart_items.each do |movie_id, quantity| %>
         <% movie = Movie.find(movie_id) %>
@@ -18,11 +19,25 @@
           <p><strong>Subtotal:</strong> <%= number_to_currency(movie.price * quantity) %></p>
         </div>
       <% end %>
+
+      <% # Calculate subtotal %>
+      <% subtotal = @cart_items.sum { |movie_id, qty| Movie.find(movie_id).price * qty } %>
+      <% # Get the user's province %>
+      <% province = current_user.province %>
+      <% gst = province.gst * subtotal / 100 %>
+      <% pst = province.pst * subtotal / 100 %>
+      <% hst = province.hst * subtotal / 100 %>
+      <% total_tax = gst + pst + hst %>
+      <% total = subtotal + total_tax %>
+
       <h2 class="subtitle">Order Total</h2>
-      <p>
-        <strong>Total:</strong>
-        <%= number_to_currency(@cart_items.sum { |movie_id, qty| Movie.find(movie_id).price * qty }) %>
-      </p>
+      <p><strong>Subtotal:</strong> <%= number_to_currency(subtotal) %></p>
+      <p><strong>GST:</strong> <%= number_to_currency(gst) %></p>
+      <p><strong>PST:</strong> <%= number_to_currency(pst) %></p>
+      <p><strong>HST:</strong> <%= number_to_currency(hst) %></p>
+      <p><strong>Total Tax:</strong> <%= number_to_currency(total_tax) %></p>
+      <p><strong>Total:</strong> <%= number_to_currency(total) %></p>
+
       <div class="field">
         <%= f.submit "Place Order", class: "button is-primary" %>
       </div>
