@@ -3,22 +3,23 @@ class ApplicationController < ActionController::Base
 
   # Custom after sign-in path
   def after_sign_in_path_for(resource)
-    if resource.admin?
-      admin_dashboard_path # or any admin page you'd like to redirect to
+    if resource.is_a?(AdminUser)
+      admin_dashboard_path # Redirect admin users to the ActiveAdmin dashboard
     else
-      root_path
+      root_path # Redirect regular users to the homepage
     end
   end
 
   protected
 
   def authenticate_admin_user!
-    if request.path != new_admin_user_session_path && (current_admin_user.nil? || current_admin_user.role != "admin")
+    # Only check if it's an AdminUser, not a regular User
+    if request.path != new_admin_user_session_path && current_admin_user.nil?
       redirect_to root_path, alert: "You do not have permission to access this page."
     end
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:province_id])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:province_id])  # Permit province_id during sign-up
   end
 end

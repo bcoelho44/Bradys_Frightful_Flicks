@@ -30,7 +30,9 @@
             <%= link_to "Login", new_user_session_path, class: "button is-light navbar-item" %>
             <%= link_to "Sign Up", new_user_registration_path, class: "button is-primary navbar-item" %>
           <% end %>
-          <%= link_to "Admin", new_admin_user_session_path, class: "button is-warning navbar-item" %>
+          <% if current_user.is_a?(AdminUser) %> <!-- Only show admin link to admin users -->
+            <%= link_to "Admin", new_admin_user_session_path, class: "button is-warning navbar-item" %>
+          <% end %>
         </div>
       </div>
     </nav>

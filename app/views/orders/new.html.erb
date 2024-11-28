@@ -11,6 +11,11 @@
         <%= f.hidden_field :status, value: "pending" %> <!-- Add status -->
       </div>
 
+      <div class="field">
+        <%= f.label :province, "Province" %>
+        <%= current_user.province.name %> <!-- Display the user's province -->
+      </div>
+
       <h2 class="subtitle">Cart Summary</h2>
       <% @cart_items.each do |movie_id, quantity| %>
         <% movie = Movie.find(movie_id) %>

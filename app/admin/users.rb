@@ -3,7 +3,6 @@ ActiveAdmin.register User do
 
   # Filters for searching users
   filter :email
-  filter :role, as: :select, collection: ['customer', 'admin']
   filter :created_at
 
   # Index page - displayed when admins view the list of users

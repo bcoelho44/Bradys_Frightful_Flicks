@@ -34,4 +34,18 @@ ActiveAdmin.register Order do
     end
     f.actions
   end
+
+  # Ensure the order is properly set in the edit view
+  controller do
+    before_action :set_order, only: [:edit, :update]
+
+    def set_order
+      @order = Order.find_by(id: params[:id])
+      if @order.nil?
+        Rails.logger.error "Order with ID #{params[:id]} not found"
+      else
+        Rails.logger.info "Found order with ID #{@order.id}"
+      end
+    end
+  end
 end

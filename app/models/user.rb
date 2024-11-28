@@ -12,14 +12,13 @@ class User < ApplicationRecord
 
   # Validations
   validates :province_id, presence: true, unless: :skip_province_validation?
-  validates :role, inclusion: { in: ["customer"] } # Restrict role to "customer"
 
   # Callbacks
-  before_validation :set_default_role, on: :create
+  before_validation :set_default_province, on: :create
 
   # Define the ransackable attributes
   def self.ransackable_attributes(auth_object = nil)
-    ["email", "role", "created_at", "updated_at", "province_id"]
+    ["email", "created_at", "updated_at", "province_id"]
   end
 
   # Define the ransackable associations
@@ -29,11 +28,12 @@ class User < ApplicationRecord
 
   private
 
-  def set_default_role
-    self.role ||= "customer"
+  # Set default province if not provided (adjust as necessary)
+  def set_default_province
+    self.province ||= Province.first # You can set a default or allow null
   end
 
   def skip_province_validation?
-    role == "admin"
+    false # Ensure province validation is always enforced
   end
 end

@@ -33,7 +33,7 @@ Rails.application.routes.draw do
 
   # ActiveAdmin routes
   devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
+  ActiveAdmin.routes(self)  # This line is for ActiveAdmin's resource handling
 
   # User authentication routes
   devise_for :users, controllers: {
