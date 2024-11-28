@@ -21,6 +21,7 @@
         <div class="navbar-end">
           <% if user_signed_in? %>
             <span class="navbar-item">Welcome, <%= current_user.email %></span>
+            <%= link_to "Account", edit_user_registration_path, class: "button is-light navbar-item" %>  <!-- Add this line -->
             <div class="navbar-item">
               <%= form_with url: destroy_user_session_path, method: :delete, local: true do %>
                 <%= submit_tag "Logout", class: "button is-light" %>

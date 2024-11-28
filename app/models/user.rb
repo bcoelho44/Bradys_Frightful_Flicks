@@ -4,17 +4,14 @@ class User < ApplicationRecord
 
   # Relationships
   has_many :orders, dependent: :destroy
-  has_one :address, dependent: :destroy
-  belongs_to :province, optional: true
+  has_one :addresses, dependent: :destroy
+  belongs_to :province, optional: false
 
   # Nested attributes for address
-  accepts_nested_attributes_for :address, allow_destroy: true
+  accepts_nested_attributes_for :addresses, allow_destroy: true
 
   # Validations
-  validates :province_id, presence: true, unless: :skip_province_validation?
-
-  # Callbacks
-  before_validation :set_default_province, on: :create
+  validates :province_id, presence: { message: "Please select a province" }
 
   # Define the ransackable attributes
   def self.ransackable_attributes(auth_object = nil)
@@ -24,16 +21,5 @@ class User < ApplicationRecord
   # Define the ransackable associations
   def self.ransackable_associations(auth_object = nil)
     ["address", "province"]  # Allow address and province to be searchable
-  end
-
-  private
-
-  # Set default province if not provided (adjust as necessary)
-  def set_default_province
-    self.province ||= Province.first # You can set a default or allow null
-  end
-
-  def skip_province_validation?
-    false # Ensure province validation is always enforced
   end
 end

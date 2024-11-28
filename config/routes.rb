@@ -40,6 +40,8 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
+  resource :user, only: [:edit, :update]  # Allows user to edit their account info
+
   # Health check endpoint
   get 'up', to: 'rails/health#show', as: :rails_health_check
 
