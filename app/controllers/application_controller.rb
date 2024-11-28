@@ -1,17 +1,23 @@
 class ApplicationController < ActionController::Base
-  # Ensure permitted parameters are configured for Devise controllers
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  # Restrict admin access for Active Admin
-  def authenticate_admin_user!
-    unless current_admin_user.present?
-      redirect_to new_admin_user_session_path, alert: 'Access denied: Admins only.'
+  # Custom after sign-in path
+  def after_sign_in_path_for(resource)
+    if resource.admin?
+      admin_dashboard_path # or any admin page you'd like to redirect to
+    else
+      root_path
     end
   end
 
   protected
 
-  # Allow additional parameters for Devise sign-up and account update
+  def authenticate_admin_user!
+    if request.path != new_admin_user_session_path && (current_admin_user.nil? || current_admin_user.role != "admin")
+      redirect_to root_path, alert: "You do not have permission to access this page."
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:province_id])
   end

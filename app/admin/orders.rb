@@ -1,5 +1,5 @@
 ActiveAdmin.register Order do
-  permit_params :user_id, :status, :total_amount
+  permit_params :user_id, :status, :total_amount, order_items_attributes: [:id, :movie_id, :quantity, :price, :_destroy]
 
   # Filters
   filter :status, as: :select, collection: %w[pending paid shipped]
@@ -13,6 +13,9 @@ ActiveAdmin.register Order do
     column :user
     column :status
     column :total_amount
+    column 'Movies' do |order|
+      order.movies.map(&:title).join(', ')
+    end
     column :created_at
     actions
   end
@@ -23,6 +26,11 @@ ActiveAdmin.register Order do
       f.input :user, as: :select, collection: User.all.map { |u| [u.email, u.id] }
       f.input :status, as: :select, collection: %w[pending paid shipped]
       f.input :total_amount
+      f.has_many :order_items, allow_destroy: true do |oi|
+        oi.input :movie
+        oi.input :quantity
+        oi.input :price
+      end
     end
     f.actions
   end

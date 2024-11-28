@@ -1,26 +1,30 @@
 <h2>Invoice</h2>
 
-<table class="table is-fullwidth">
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th>Price</th>
-      <th>Quantity</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @order.order_items.each do |item| %>
+<% if @order %>  <!-- Start the if block here -->
+  <table class="table is-fullwidth">
+    <thead>
       <tr>
-        <td><%= item.movie.title %></td>
-        <td><%= number_to_currency(item.price) %></td>
-        <td><%= item.quantity %></td>
-        <td><%= number_to_currency(item.price * item.quantity) %></td>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @order.order_items.each do |item| %>
+        <tr>
+          <td><%= item.movie.title %></td>
+          <td><%= number_to_currency(item.price) %></td>
+          <td><%= item.quantity %></td>
+          <td><%= number_to_currency(item.price * item.quantity) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<p><strong>Subtotal:</strong> <%= number_to_currency(@order.subtotal) %></p>
-<p><strong>Taxes:</strong> <%= number_to_currency(@order.calculate_taxes) %></p>
-<p><strong>Total:</strong> <%= number_to_currency(@order.total_amount) %></p>
+  <p><strong>Subtotal:</strong> <%= number_to_currency(@order.subtotal) %></p>
+  <p><strong>Taxes:</strong> <%= number_to_currency(@order.calculate_taxes) %></p>
+  <p><strong>Total:</strong> <%= number_to_currency(@order.total_amount) %></p>
+<% else %>  <!-- Else block for when @order is nil -->
+  <p>Order not found.</p>
+<% end %>  <!-- Close the if block here -->

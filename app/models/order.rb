@@ -37,6 +37,7 @@ class Order < ApplicationRecord
 
   # Subtotal Calculation Logic
   def calculate_subtotal
+    # Calculate the subtotal based on order items' price and quantity
     order_items.sum { |item| item.price * item.quantity }
   end
 
@@ -45,5 +46,10 @@ class Order < ApplicationRecord
     subtotal = calculate_subtotal
     taxes = calculate_taxes
     self.total_amount = subtotal + taxes
+  end
+
+  # Add a method for `subtotal` if you want to access it directly
+  def subtotal
+    calculate_subtotal
   end
 end

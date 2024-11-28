@@ -7,6 +7,8 @@
       <div class="field">
         <%= f.label :user_email, "Email" %>
         <%= current_user.email %>
+        <%= f.hidden_field :user_id, value: current_user.id %> <!-- Add user_id -->
+        <%= f.hidden_field :status, value: "pending" %> <!-- Add status -->
       </div>
 
       <h2 class="subtitle">Cart Summary</h2>
@@ -17,6 +19,13 @@
           <p><strong>Quantity:</strong> <%= quantity %></p>
           <p><strong>Price:</strong> <%= number_to_currency(movie.price) %></p>
           <p><strong>Subtotal:</strong> <%= number_to_currency(movie.price * quantity) %></p>
+
+          <!-- Add order item for each product in the cart -->
+          <%= f.fields_for :order_items, OrderItem.new do |oi| %>
+            <%= oi.hidden_field :movie_id, value: movie.id %>
+            <%= oi.hidden_field :quantity, value: quantity %>
+            <%= oi.hidden_field :price, value: movie.price %>
+          <% end %>
         </div>
       <% end %>
 
@@ -37,6 +46,8 @@
       <p><strong>HST:</strong> <%= number_to_currency(hst) %></p>
       <p><strong>Total Tax:</strong> <%= number_to_currency(total_tax) %></p>
       <p><strong>Total:</strong> <%= number_to_currency(total) %></p>
+
+      <%= f.hidden_field :total_amount, value: total %> <!-- Add total amount -->
 
       <div class="field">
         <%= f.submit "Place Order", class: "button is-primary" %>

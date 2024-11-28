@@ -3,6 +3,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
   # Relationships
+  has_many :orders, dependent: :destroy
   has_one :address, dependent: :destroy
   belongs_to :province, optional: true
 
@@ -15,6 +16,16 @@ class User < ApplicationRecord
 
   # Callbacks
   before_validation :set_default_role, on: :create
+
+  # Define the ransackable attributes
+  def self.ransackable_attributes(auth_object = nil)
+    ["email", "role", "created_at", "updated_at", "province_id"]
+  end
+
+  # Define the ransackable associations
+  def self.ransackable_associations(auth_object = nil)
+    ["address", "province"]  # Allow address and province to be searchable
+  end
 
   private
 

@@ -8,4 +8,8 @@ class AdminUser < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     ["id", "email", "created_at", "updated_at"] # Add attributes you want searchable
   end
+
+  def admin?
+    self.role == 'admin' # or any other condition you need
+  end
 end
