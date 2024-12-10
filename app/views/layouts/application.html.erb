@@ -34,6 +34,10 @@
           <% if current_user.is_a?(AdminUser) %> <!-- Only show admin link to admin users -->
             <%= link_to "Admin", new_admin_user_session_path, class: "button is-warning navbar-item" %>
           <% end %>
+          <% if user_signed_in? %>
+            <%= link_to 'Your Orders', orders_path, class: 'navbar-item' %>
+          <% end %>
+
         </div>
       </div>
     </nav>

@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   end
 
   # Orders routes
-  resources :orders, only: [:new, :create, :show]
+  resources :orders, only: [:new, :create, :show, :index]  # Add :index here for customer orders view
 
   # ActiveAdmin routes
   devise_for :admin_users, ActiveAdmin::Devise.config
