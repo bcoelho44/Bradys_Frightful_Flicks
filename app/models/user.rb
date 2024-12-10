@@ -4,11 +4,11 @@ class User < ApplicationRecord
 
   # Relationships
   has_many :orders, dependent: :destroy
-  has_one :addresses, dependent: :destroy
+  has_one :address, dependent: :destroy  # Revert back to has_one for single address
   belongs_to :province, optional: false
 
   # Nested attributes for address
-  accepts_nested_attributes_for :addresses, allow_destroy: true
+  accepts_nested_attributes_for :address, allow_destroy: true  # Use accepts_nested_attributes_for for one address
 
   # Validations
   validates :province_id, presence: { message: "Please select a province" }
@@ -20,6 +20,6 @@ class User < ApplicationRecord
 
   # Define the ransackable associations
   def self.ransackable_associations(auth_object = nil)
-    ["address", "province"]  # Allow address and province to be searchable
+    ["address", "province"]  # Keep address as singular here
   end
 end

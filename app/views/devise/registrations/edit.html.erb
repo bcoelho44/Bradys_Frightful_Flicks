@@ -31,9 +31,9 @@
     <%= f.collection_select :province_id, Province.all, :id, :name, { include_blank: "Select Province" }, class: "select" %>
   </div>
 
-  <!-- Address Fields (Multiple Addresses) -->
+  <!-- Address Fields -->
   <h3>Address Information</h3>
-  <%= f.fields_for :addresses do |address_form| %>
+  <%= f.fields_for :address do |address_form| %>
     <div class="field">
       <%= address_form.label :street, "Street" %><br />
       <%= address_form.text_field :street, class: "input" %>
@@ -47,12 +47,6 @@
     <div class="field">
       <%= address_form.label :postal_code, "Postal Code" %><br />
       <%= address_form.text_field :postal_code, class: "input" %>
-    </div>
-
-    <!-- Add a delete option for each address -->
-    <div class="field">
-      <%= address_form.check_box :_destroy %>
-      <%= address_form.label :_destroy, "Remove this address" %>
     </div>
   <% end %>
 

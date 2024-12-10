@@ -3,8 +3,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
+  # Permit additional parameters for account update
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:province_id, addresses_attributes: [:street, :city, :postal_code]])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:province_id, addresses_attributes: [:street, :city, :postal_code]])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:province_id, address_attributes: [:street, :city, :postal_code]])
   end
 end

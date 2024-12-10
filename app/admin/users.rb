@@ -1,5 +1,5 @@
 ActiveAdmin.register User do
-  permit_params :email, :password, :password_confirmation, :role, :province_id, addresses_attributes: [:street, :city, :postal_code, :province_id]
+  permit_params :email, :password, :password_confirmation, :role, :province_id, address_attributes: [:street, :city, :postal_code, :province_id]
 
   # Filters for searching users
   filter :email
@@ -14,8 +14,8 @@ ActiveAdmin.register User do
     column :province
     column :created_at
     column "Address" do |user|
-      if user.addresses.any?
-        user.addresses.map { |address| "#{address.street}, #{address.city}, #{address.postal_code}, #{address.province.name}" }.join("; ")
+      if user.address
+        "#{user.address.street}, #{user.address.city}, #{user.address.postal_code}, #{user.address.province.name}"
       else
         "No address provided"
       end
@@ -31,9 +31,9 @@ ActiveAdmin.register User do
       row :province
       row :created_at
       row :updated_at
-      row :address do |user|
-        if user.addresses.any?
-          user.addresses.map { |address| "#{address.street}, #{address.city}, #{address.postal_code}, #{address.province.name}" }.join("; ")
+      row "Address" do |user|
+        if user.address
+          "#{user.address.street}, #{user.address.city}, #{user.address.postal_code}, #{user.address.province.name}"
         else
           "No address provided"
         end
@@ -52,7 +52,7 @@ ActiveAdmin.register User do
       f.input :password_confirmation
     end
     f.inputs 'Address' do
-      f.has_many :addresses, allow_destroy: true, new_record: true do |a|
+      f.has_one :address, allow_destroy: true do |a|
         a.input :street
         a.input :city
         a.input :postal_code
