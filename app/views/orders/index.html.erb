@@ -1,36 +1,32 @@
 <h1>Your Past Orders</h1>
 
-<% if @orders.any? %>
-  <table>
-    <thead>
+<table>
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Status</th>
+      <th>Total Amount</th>
+      <th>Movies Ordered</th>
+      <th>Taxes</th>
+      <th>Grand Total</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @orders.each do |order| %>
       <tr>
-        <th>Order ID</th>
-        <th>Status</th>
-        <th>Total Amount</th>
-        <th>Movies Ordered</th>
-        <th>Taxes</th>
-        <th>Grand Total</th>
+        <td><%= order.id %></td>
+        <td><%= order.status %></td>
+        <td><%= number_to_currency(order.total_amount) %></td>
+        <td>
+          <% order.movies.each do |movie| %>
+            <%= movie.title %> (x<%= order.order_items.find_by(movie_id: movie.id).quantity %>)<br>
+          <% end %>
+        </td>
+        <td><%= number_to_currency(order.calculate_taxes) %></td>
+        <td><%= number_to_currency(order.total_amount) %></td>
+        <td><%= link_to 'View Details', order_path(order), class: "button is-link" %></td>
       </tr>
-    </thead>
-    <tbody>
-      <% @orders.each do |order| %>
-        <tr>
-          <td><%= order.id %></td>
-          <td><%= order.status.capitalize %></td>
-          <td><%= number_to_currency(order.subtotal) %></td>
-          <td>
-            <ul>
-              <% order.movies.each do |movie| %>
-                <li><%= movie.title %> (x<%= order.order_items.find_by(movie_id: movie.id).quantity %>)</li>
-              <% end %>
-            </ul>
-          </td>
-          <td><%= number_to_currency(order.calculate_taxes) %></td>
-          <td><%= number_to_currency(order.total_amount) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>You have no past orders.</p>
-<% end %>
+    <% end %>
+  </tbody>
+</table>
