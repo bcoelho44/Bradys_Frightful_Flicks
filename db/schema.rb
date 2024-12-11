@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_28_185015) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_11_203254) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -55,9 +55,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_28_185015) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "street"
-    t.string "city"
-    t.string "postal_code"
+    t.string "street", default: ""
+    t.string "city", default: ""
+    t.string "postal_code", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "province_id"
@@ -159,9 +159,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_28_185015) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "users"
+  add_foreign_key "addresses", "users", on_delete: :cascade
   add_foreign_key "movie_subgenres", "movies"
   add_foreign_key "movie_subgenres", "subgenres"
   add_foreign_key "order_items", "movies"
   add_foreign_key "order_items", "orders"
   add_foreign_key "orders", "users"
+  add_foreign_key "orders", "users", on_delete: :cascade
 end

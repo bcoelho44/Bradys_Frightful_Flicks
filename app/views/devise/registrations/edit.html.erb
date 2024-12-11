@@ -1,25 +1,17 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
-  <!-- Current Password Field (Required by Devise for Account Update) -->
+  <!-- Current Password -->
   <div class="field">
     <%= f.label :current_password %><br />
     <%= f.password_field :current_password, autocomplete: "off", class: "input" %>
   </div>
 
-  <!-- Email Field -->
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input" %>
-  </div>
-
-  <!-- Password Field -->
+  <!-- New Password Fields -->
   <div class="field">
     <%= f.label :password %><br />
     <%= f.password_field :password, autocomplete: "new-password", class: "input" %>
   </div>
-
-  <!-- Password Confirmation Field -->
   <div class="field">
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input" %>
@@ -31,22 +23,38 @@
     <%= f.collection_select :province_id, Province.all, :id, :name, { include_blank: "Select Province" }, class: "select" %>
   </div>
 
+  <!-- Current Address Information -->
+  <h3>Current Address Information</h3>
+  <% if resource.address.present? %>
+    <div class="field">
+      <strong>Street:</strong> <%= resource.address.street %>
+    </div>
+    <div class="field">
+      <strong>City:</strong> <%= resource.address.city %>
+    </div>
+    <div class="field">
+      <strong>Postal Code:</strong> <%= resource.address.postal_code %>
+    </div>
+  <% else %>
+    <p>No address set yet. Please provide your address below:</p>
+  <% end %>
+
   <!-- Address Fields -->
   <h3>Address Information</h3>
   <%= f.fields_for :address do |address_form| %>
     <div class="field">
       <%= address_form.label :street, "Street" %><br />
-      <%= address_form.text_field :street, class: "input" %>
+      <%= address_form.text_field :street, class: "input", value: resource.address&.street || '' %>
     </div>
 
     <div class="field">
       <%= address_form.label :city, "City" %><br />
-      <%= address_form.text_field :city, class: "input" %>
+      <%= address_form.text_field :city, class: "input", value: resource.address&.city || '' %>
     </div>
 
     <div class="field">
       <%= address_form.label :postal_code, "Postal Code" %><br />
-      <%= address_form.text_field :postal_code, class: "input" %>
+      <%= address_form.text_field :postal_code, class: "input", value: resource.address&.postal_code || '' %>
     </div>
   <% end %>
 

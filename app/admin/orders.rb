@@ -1,51 +1,48 @@
 ActiveAdmin.register Order do
-  permit_params :user_id, :status, :total_amount, order_items_attributes: [:id, :movie_id, :quantity, :price, :_destroy]
+  permit_params :status, :user_id, :total_amount, order_items_attributes: [:movie_id, :quantity, :price]
 
-  # Filters
-  filter :status, as: :select, collection: %w[pending paid shipped]
-  filter :user
-  filter :created_at
-
-  # Index Page
+  # Display orders in the index page
   index do
     selectable_column
-    column :id
+    id_column
     column :user
     column :status
     column :total_amount
-    column 'Movies' do |order|
-      order.movies.map(&:title).join(', ')
+    column "Movies Ordered" do |order|
+      # List the movie titles along with their quantities and price
+      order.order_items.map { |item| "#{item.movie.title} (x#{item.quantity})" }.join(", ")
+    end
+    column "Taxes" do |order|
+      # Display all taxes (GST, PST, HST)
+      gst = (order.calculate_taxes * 0.05).round(2) # 5% GST
+      pst = (order.calculate_taxes * 0.07).round(2) # 7% PST
+      hst = (order.calculate_taxes * 0.13).round(2) # 13% HST
+      "GST: $#{gst}, PST: $#{pst}, HST: $#{hst}"
     end
     column :created_at
     actions
   end
 
-  # Form for creating/editing an order
-  form do |f|
-    f.inputs 'Order Details' do
-      f.input :user, as: :select, collection: User.all.map { |u| [u.email, u.id] }
-      f.input :status, as: :select, collection: %w[pending paid shipped]
-      f.input :total_amount
-      f.has_many :order_items, allow_destroy: true do |oi|
-        oi.input :movie
-        oi.input :quantity
-        oi.input :price
+  # Show detailed order information
+  show do
+    attributes_table do
+      row :user
+      row :status
+      row :total_amount
+      row "Movies Ordered" do |order|
+        # List movies ordered with their quantities and price
+        order.order_items.map { |item| "#{item.movie.title} (x#{item.quantity}) - $#{item.price} each" }.join(", ")
       end
-    end
-    f.actions
-  end
-
-  # Ensure the order is properly set in the edit view
-  controller do
-    before_action :set_order, only: [:edit, :update]
-
-    def set_order
-      @order = Order.find_by(id: params[:id])
-      if @order.nil?
-        Rails.logger.error "Order with ID #{params[:id]} not found"
-      else
-        Rails.logger.info "Found order with ID #{@order.id}"
+      row "Taxes" do |order|
+        # Calculate and display the tax breakdown for GST, PST, and HST
+        gst = (order.calculate_taxes * 0.05).round(2) # 5% GST
+        pst = (order.calculate_taxes * 0.07).round(2) # 7% PST
+        hst = (order.calculate_taxes * 0.13).round(2) # 13% HST
+        "GST: $#{gst}, PST: $#{pst}, HST: $#{hst}"
       end
+      row :created_at
+      row :updated_at
     end
+    active_admin_comments
   end
 end

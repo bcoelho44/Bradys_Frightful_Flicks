@@ -21,4 +21,14 @@
 <h3>Grand Total</h3>
 <p><%= number_to_currency(@order.total_amount) %></p>
 
+<h3>Shipping Address</h3>
+<% if @order.user.address.present? %>
+  <p><strong>Street:</strong> <%= @order.user.address.street %></p>
+  <p><strong>City:</strong> <%= @order.user.address.city %></p>
+  <p><strong>Postal Code:</strong> <%= @order.user.address.postal_code %></p>
+  <p><strong>Province:</strong> <%= @order.user.address.province.name %></p>
+<% else %>
+  <p>No address found for this order.</p>
+<% end %>
+
 <%= link_to 'Back to Orders', orders_path, class: "button is-link" %>

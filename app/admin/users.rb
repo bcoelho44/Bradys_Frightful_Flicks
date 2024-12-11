@@ -1,5 +1,5 @@
 ActiveAdmin.register User do
-  permit_params :email, :password, :password_confirmation, :role, :province_id, address_attributes: [:street, :city, :postal_code, :province_id]
+  permit_params :email, :password, :password_confirmation, :role, :province_id, address_attributes: [:street, :city, :postal_code]
 
   # Filters for searching users
   filter :email
@@ -13,13 +13,6 @@ ActiveAdmin.register User do
     column :role
     column :province
     column :created_at
-    column "Address" do |user|
-      if user.address
-        "#{user.address.street}, #{user.address.city}, #{user.address.postal_code}, #{user.address.province.name}"
-      else
-        "No address provided"
-      end
-    end
     actions
   end
 
@@ -31,15 +24,24 @@ ActiveAdmin.register User do
       row :province
       row :created_at
       row :updated_at
-      row "Address" do |user|
-        if user.address
-          "#{user.address.street}, #{user.address.city}, #{user.address.postal_code}, #{user.address.province.name}"
-        else
-          "No address provided"
-        end
+      row :address do |user|
+        user.address.present? ? "#{user.address.street}, #{user.address.city}, #{user.address.postal_code}" : "No address provided"
       end
     end
-    active_admin_comments
+
+    # Display user's past orders
+    panel "Past Orders" do
+      table_for user.orders do
+        column :id
+        column :status
+        column :total_amount
+        column "Movies Ordered" do |order|
+          order.movies.map { |movie| movie.title }.join(", ")
+        end
+        column :created_at
+        column :updated_at
+      end
+    end
   end
 
   # Form for creating/editing users
@@ -52,11 +54,10 @@ ActiveAdmin.register User do
       f.input :password_confirmation
     end
     f.inputs 'Address' do
-      f.has_one :address, allow_destroy: true do |a|
+      f.has_many :address, allow_destroy: true, new_record: true do |a|
         a.input :street
         a.input :city
         a.input :postal_code
-        a.input :province
       end
     end
     f.actions

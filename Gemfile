@@ -27,6 +27,8 @@ gem 'image_processing'  # for ActiveStorage
 gem 'sassc-rails'
 gem 'mini_magick'
 gem 'ransack'
+gem 'bulma-rails'
+
 
 
 

@@ -4,9 +4,21 @@ class Address < ApplicationRecord
   belongs_to :province
 
   # Validations
-  validates :street, :city, :postal_code, :province_id, presence: true
+  validates :province, presence: true # Make sure the province is selected
+  validates :street, :city, :postal_code, presence: true
   validates :postal_code, format: { with: /\A[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d\z/, message: "must be a valid postal code" }
 
   # Scopes
   scope :by_province, ->(province_id) { where(province_id: province_id) }
+
+  # Default values for new addresses
+  after_initialize :set_default_values, if: :new_record?
+
+  private
+
+  def set_default_values
+    self.street ||= "" # Default empty street if not set
+    self.city ||= ""    # Default empty city if not set
+    self.postal_code ||= ""  # Default empty postal code if not set
+  end
 end
