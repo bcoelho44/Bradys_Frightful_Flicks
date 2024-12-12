@@ -1,5 +1,10 @@
 ActiveAdmin.register Order do
-  permit_params :status, :user_id, :total_amount, order_items_attributes: [:movie_id, :quantity, :price]
+  permit_params :status, :user_id, :total_amount, :stripe_session_id, order_items_attributes: [:movie_id, :quantity, :price]
+
+  # Remove the filter for stripe_session_id
+  filter :user
+  filter :status
+  filter :total_amount
 
   # Display orders in the index page
   index do
@@ -8,6 +13,7 @@ ActiveAdmin.register Order do
     column :user
     column :status
     column :total_amount
+    column :stripe_session_id  # Display the stripe session id without filtering
     column "Movies Ordered" do |order|
       # List the movie titles along with their quantities and price
       order.order_items.map { |item| "#{item.movie.title} (x#{item.quantity})" }.join(", ")
@@ -29,6 +35,7 @@ ActiveAdmin.register Order do
       row :user
       row :status
       row :total_amount
+      row :stripe_session_id  # Display the stripe session id without filtering
       row "Movies Ordered" do |order|
         # List movies ordered with their quantities and price
         order.order_items.map { |item| "#{item.movie.title} (x#{item.quantity}) - $#{item.price} each" }.join(", ")

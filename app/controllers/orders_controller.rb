@@ -1,5 +1,4 @@
 class OrdersController < ApplicationController
-
   before_action :authenticate_user!
 
   # Displays all past orders for a customer
@@ -58,8 +57,11 @@ class OrdersController < ApplicationController
           end,
           mode: 'payment',  # This is the required mode for one-time payments
           success_url: order_url(@order) + "?session_id={CHECKOUT_SESSION_ID}",
-          cancel_url: root_url,
+          cancel_url: orders_url, # Redirect to orders index or cart page after cancellation
         })
+
+        # Store the session id in the order (to be fetched later in the success handler)
+        @order.update(stripe_session_id: session.id)
 
         # Redirect to Stripe Checkout page
         redirect_to session.url, allow_other_host: true
@@ -71,13 +73,23 @@ class OrdersController < ApplicationController
     redirect_to cart_index_path, alert: "One or more items in your cart are no longer available."
   end
 
-
-
   # Displays an individual order's details
   def show
     @order = Order.find_by(id: params[:id], user: current_user)
     unless @order
       redirect_to root_path, alert: "Order not found or you do not have access to this order."
+    end
+
+    # If the session_id is passed in the URL (after successful payment), verify the session
+    if params[:session_id]
+      session = Stripe::Checkout::Session.retrieve(params[:session_id])
+
+      if session.payment_status == 'paid' && session.id == @order.stripe_session_id
+        @order.update(status: 'paid')
+        flash[:notice] = "Thank you! Your payment was successful."
+      else
+        flash[:alert] = "There was an issue with your payment. Please try again."
+      end
     end
   end
 
