@@ -1,4 +1,7 @@
+require 'stripe'
+
 class OrdersController < ApplicationController
+
   before_action :authenticate_user!
 
   # Displays all past orders for a customer
@@ -19,7 +22,7 @@ class OrdersController < ApplicationController
     @cart_items = session[:cart] || {} # Fetch items from the cart
   end
 
-  # Handles the order creation
+  # Handles the order creation and Stripe payment processing
   def create
     @order = Order.new(order_params)
     @order.user = current_user
@@ -40,8 +43,23 @@ class OrdersController < ApplicationController
 
       # Save the order to the database
       if @order.save
-        session[:cart] = nil # Clear cart after successful order
-        redirect_to @order, notice: "Order successfully placed."
+        # Create a Stripe Checkout session
+        session = Stripe::Checkout::Session.create({
+          payment_method_types: ['card'],
+          line_items: @order.order_items.map do |item|
+            {
+              name: item.movie.title,
+              amount: (item.price * 100).to_i,  # Stripe accepts amount in cents
+              currency: 'usd',
+              quantity: item.quantity,
+            }
+          end,
+          success_url: order_url(@order) + "?session_id={CHECKOUT_SESSION_ID}",
+          cancel_url: root_url,
+        })
+
+        # Redirect to Stripe Checkout page
+        redirect_to session.url, allow_other_host: true
       else
         render :new, alert: "Failed to place order. Please try again."
       end

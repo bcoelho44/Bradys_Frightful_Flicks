@@ -28,6 +28,8 @@ gem 'sassc-rails'
 gem 'mini_magick'
 gem 'ransack'
 gem 'bulma-rails'
+gem 'stripe'
+
 
 
 
