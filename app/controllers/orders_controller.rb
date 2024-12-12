@@ -41,17 +41,22 @@ class OrdersController < ApplicationController
 
       # Save the order to the database
       if @order.save
-        # Create a Stripe Checkout session
+        # Create a Stripe Checkout session with updated line_items format and mode
         session = Stripe::Checkout::Session.create({
           payment_method_types: ['card'],
           line_items: @order.order_items.map do |item|
             {
-              name: item.movie.title,
-              amount: (item.price * 100).to_i,  # Stripe accepts amount in cents
-              currency: 'usd',
+              price_data: {
+                currency: 'usd',  # You can replace 'usd' with the appropriate currency
+                product_data: {
+                  name: item.movie.title,
+                },
+                unit_amount: (item.price * 100).to_i,  # Stripe accepts amount in cents
+              },
               quantity: item.quantity,
             }
           end,
+          mode: 'payment',  # This is the required mode for one-time payments
           success_url: order_url(@order) + "?session_id={CHECKOUT_SESSION_ID}",
           cancel_url: root_url,
         })
@@ -65,6 +70,8 @@ class OrdersController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     redirect_to cart_index_path, alert: "One or more items in your cart are no longer available."
   end
+
+
 
   # Displays an individual order's details
   def show
