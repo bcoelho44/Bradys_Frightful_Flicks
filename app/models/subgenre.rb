@@ -5,6 +5,7 @@ class Subgenre < ApplicationRecord
   # Validations
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates_length_of :name, maximum: 50
+  validates :name, format: { with: /\A[a-zA-Z\s]+\z/, message: "only allows letters and spaces" }
 
   # Callbacks
   before_save :capitalize_name

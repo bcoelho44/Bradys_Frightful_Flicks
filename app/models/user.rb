@@ -11,7 +11,9 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :address, allow_destroy: true
 
   # Validations
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
   validates :province_id, presence: { message: "Please select a province" }
+  validates :password, length: { minimum: 6 }, allow_nil: true # Ensuring password length
 
     # Configure permitted parameters
     def configure_permitted_parameters

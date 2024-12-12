@@ -17,8 +17,8 @@ class Address < ApplicationRecord
   private
 
   def set_default_values
-    self.street ||= "" # Default empty street if not set
-    self.city ||= ""    # Default empty city if not set
-    self.postal_code ||= ""  # Default empty postal code if not set
+    self.street ||= ""
+    self.city ||= ""
+    self.postal_code ||= ""
   end
 end

@@ -7,6 +7,7 @@ class Order < ApplicationRecord
   # Validations
   validates :total_amount, numericality: { greater_than_or_equal_to: 0 }
   validates :status, presence: true, inclusion: { in: %w[pending paid shipped], message: "%{value} is not a valid status" }
+  validates :user_id, presence: true
 
   # Hooks
   before_save :update_total_amount
@@ -23,7 +24,7 @@ class Order < ApplicationRecord
 
   # Tax Calculation Logic
   def calculate_taxes
-    province = user.province # Ensure province is directly accessible via user
+    province = user.province
     raise "Province not found for user!" unless province
 
     subtotal = calculate_subtotal
@@ -37,7 +38,6 @@ class Order < ApplicationRecord
 
   # Subtotal Calculation Logic
   def calculate_subtotal
-    # Calculate the subtotal based on order items' price and quantity
     order_items.sum { |item| item.price * item.quantity }
   end
 

@@ -11,6 +11,7 @@ class Movie < ApplicationRecord
   validates :title, presence: true, uniqueness: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }, presence: true
   validates :stock_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :image, presence: true
 
   # Scopes
   scope :recently_added, -> { where("created_at >= ?", 3.days.ago) }
